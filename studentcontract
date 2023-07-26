@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity >=0.5.0 <0.9.0;
+
+
+contract studentRecord {
+
+     struct student {
+        uint roll;
+        string name;
+        uint[3] marks;
+
+    }
+
+    address classTeacher;
+    uint public stdCount;
+    mapping(uint=>student) public stdRecords;
+
+    constructor ()  {
+        classTeacher = msg.sender;
+    }
+
+    modifier onlyTeacher{
+        require (classTeacher == msg.sender, "you are  not the clAss Teacher");
+        _;
+    }
+
+    function addRecords (uint _roll,uint[3] memory _marks,string memory _name) public onlyTeacher{
+        stdRecords [_roll] = student(_roll,_name,_marks);
+
+    }
+
+   function getRecord (uint _roll)  onlyTeacher view public returns (student memory) {
+       require (stdRecords[_roll].roll!=0, "Record does not exists ");
+       return stdRecords[_roll];
+    }
+
+      function deleteRecord(uint _roll) public onlyTeacher {
+          delete stdRecords[_roll];
+      }
+
+
+}
